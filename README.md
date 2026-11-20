@@ -8,12 +8,17 @@ The idea is not completely new: capture-time signing has already been proposed f
 
 ## How it works
 
-<!-- TODO (Jorge): explain the idea step by step, in your words. Suggested points:
-     1. The camera takes a photo.
-     2. The secure element signs a hash of the image together with metadata (time, GPS position).
-     3. The private key never leaves the secure element.
-     4. The image and its signature are sent to the ground.
-     5. The ground station verifies the signature with the public key: if a single pixel changes, verification fails. -->
+1. **Capture.** The camera (OV2640) takes the picture and the ESP32-S3 receives it as a JPEG. At that exact moment, the time and GPS position are read, and a counter is incremented with every photo.
+2. **Image fingerprint.** The image is split into blocks and the SHA-256 hash of each block is calculated. These hashes are combined into a Merkle tree, whose root is a single fingerprint that represents the whole image. Because each block can be checked on its own, crops can be verified and the image survives lost packets.
+3. **Signature.** The ESP32 sends the root of the tree to the secure element (ATECC608B), together with the time, the GPS position and the counter. The chip signs them with ECDSA P-256. The private key is generated inside the chip and never leaves it.
+4. **Downlink.** The image is sent to the ground by radio in packets, along with the signature and the data needed to verify each block.
+5. **Verification.** The ground station verifies the signature with the chip's public key, using an open-source verifier (first a Python script, later a web tool that runs entirely in the browser):
+   - If packets are lost, the blocks that did arrive can still be verified.
+   - If someone crops the image, the crop can still be verified.
+   - If someone changes a single pixel, verification of that block fails.
+   - The counter prevents an old photo from being passed off as a new one.
+
+*Steps 2 and 5 describe the planned design. The first prototype will implement capture, signing of the whole image and verification on a PC.*
 
 ## Block diagram
 
