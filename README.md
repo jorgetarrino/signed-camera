@@ -57,7 +57,7 @@ Operating scenario per 10-minute cycle: telemetry (10 × 0.5 s), listening for c
 | Daily balance | **+2.05 Wh** |
 | Minimum battery capacity | 506 mAh → 1000 mAh chosen |
 
-The budget leaves a comfortable margin: the panel provides 3.20 Wh per day against 1.87 Wh of consumption (including margin), so there is room for more photos or longer transmissions. The image downlink is the longest active phase of the cycle, so sending only the regions of interest, which the croppable signatures make possible, is also the most effective way to save energy.
+The budget leaves a comfortable margin: the panel provides 3.20 Wh per day against 1.87 Wh of consumption (including margin), so there is room for more photos or longer transmissions. The image downlink is the longest active phase of the cycle, so sending only the regions of interest, which croppable signatures make possible [9], is also the most effective way to save energy.
 
 ## Roadmap
 
@@ -71,11 +71,7 @@ The budget leaves a comfortable margin: the panel provides 3.20 Wh per day again
 
 ## Related work
 
-<!-- TODO (Jorge): 3–4 sentences comparing this project with existing work, citing the references below by number.
-     Points: fake satellite images are already used in disinformation [1][6]; capture-time signing has been proposed for
-     satellites by Sandia [2][3] and is used in professional cameras with a secure chip (C2PA) [4][5]; onboard signing with
-     secure elements exists for satellite computing [7] and CCSDS SDLS protects the radio link [8], but not the image itself
-     once on the ground; croppable signatures exist for photos [9] but not for satellite downlinks with packet loss. -->
+Fake satellite imagery is not only a theoretical risk: researchers have shown that AI can generate realistic satellite images of places that do not exist [6], and such images are already used in disinformation [1]. Signing images at capture has been proposed for satellites [2][3] and is already available in professional cameras through C2PA [4][5]. Other work protects data in space at a different level: Space Fabric uses secure elements on board to attest which software runs on a satellite [7], and the CCSDS Space Data Link Security protocol authenticates the frames of the radio link [8], but neither keeps the image itself verifiable once it is stored on the ground. Croppable signatures, which keep a cropped image verifiable, have been proposed for photographs [9], but not for satellite downlinks with packet loss. This project combines these ideas in a low-cost CubeSat camera.
 
 ## References
 
