@@ -67,6 +67,24 @@ Operating scenario per 10-minute cycle: telemetry (10 × 0.5 s), listening for c
 - [ ] 2.4 GHz image downlink
 - [ ] Schematic and PCB in KiCad
 
+## Related work
+
+<!-- TODO (Jorge): 3–4 sentences comparing this project with existing work, citing the references below by number, e.g. [1].
+     Points: fake satellite images are already used in disinformation [1][2]; camera makers sign photos at capture with a
+     secure chip (C2PA) [3][4]; onboard signing with secure elements exists for satellite computing [5] and CCSDS SDLS
+     protects the radio link [6], but not the image itself once on the ground; croppable signatures exist for photos [7]
+     but not for satellite downlinks with packet loss. -->
+
+## References
+
+1. AFP via Taipei Times, "Fake AI satellite imagery spurs war disinformation", March 2026. https://www.taipeitimes.com/News/world/archives/2026/03/10/2003853579
+2. B. Zhao et al., "Deep fake geography? When geospatial data encounter Artificial Intelligence", *Cartography and Geographic Information Science*, 2021. Summary: https://www.washington.edu/news/2021/04/21/a-growing-problem-of-deepfake-geography-how-ai-falsifies-satellite-images/
+3. Content Authenticity Initiative, "Leica launches world's first camera with Content Credentials", October 2023. https://contentauthenticity.org/blog/leica-launches-worlds-first-camera-with-content-credentials
+4. IEEE Spectrum, "Is that photo real?" (Leica M11-P signing with a secure chipset). https://spectrum.ieee.org/leica-camera-content-credentials
+5. F. Rezabek, D. Malkhi, A. Yahalom, "Space Fabric: A Satellite-Enhanced Trusted Execution Architecture", arXiv:2603.23745, 2026. https://arxiv.org/abs/2603.23745
+6. CCSDS 355.0-B, Space Data Link Security Protocol. https://public.ccsds.org
+7. P. Perazzo et al., "JPEGs Just Got Snipped: Croppable Signatures Against Deepfake Images", arXiv:2512.01845. https://arxiv.org/abs/2512.01845
+
 ## Author
 
 Jorge Tarriño — Industrial Electronics and Automation Engineering student, Universidad Carlos III de Madrid.
