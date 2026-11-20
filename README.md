@@ -22,7 +22,6 @@ The idea is not completely new: capture-time signing has already been proposed f
 
 ## Block diagram
 
-<!-- TODO (Jorge): export your diagram from draw.io and save it as docs/block-diagram.png -->
 ![Block diagram](docs/block-diagram.png)
 
 ## Components
@@ -41,8 +40,7 @@ The idea is not completely new: capture-time signing has already been proposed f
 | Solar panel | 6 V, 1 W | — | Matches the power budget |
 | Battery gauge | MAX17048 | I2C | State of charge for telemetry, no sense resistor |
 
-<!-- TODO (Jorge): add one or two sentences on a decision you found interesting, e.g. why buck-boost instead of an LDO,
-     or why LiPo instead of an 18650 cell. This is what interviewers ask about. -->
+**Design decision: buck-boost instead of an LDO.** An LDO regulator needs the battery to stay above about 3.55 V to deliver 3.3 V, which would leave 15–25 % of the LiPo unused. The TPS63802 buck-boost keeps 3.3 V down to 3.0 V, with about 90 % efficiency and only 11 µA of quiescent current.
 
 Protections on the custom PCB: resettable PTC fuse, reverse-polarity P-MOSFET, main switch, battery NTC, TVS on the panel input, and load switches (TPS22918) to cut camera and GPS power between photos.
 
@@ -59,8 +57,7 @@ Operating scenario per 10-minute cycle: telemetry (10 × 0.5 s), listening for c
 | Daily balance | **+2.05 Wh** |
 | Minimum battery capacity | 506 mAh → 1000 mAh chosen |
 
-<!-- TODO (Jorge): one line on the main lesson, e.g. the development board's sleep current dominates the budget,
-     which is why the custom PCB needs a low-quiescent regulator and load switches. -->
+The budget leaves a comfortable margin: the panel provides 3.20 Wh per day against 1.87 Wh of consumption (including margin), so there is room for more photos or longer transmissions. The image downlink is the longest active phase of the cycle, so sending only the regions of interest, which the croppable signatures make possible, is also the most effective way to save energy.
 
 ## Roadmap
 
