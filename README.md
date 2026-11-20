@@ -1,10 +1,10 @@
 # Signed Camera
 
-With the rise of modern AI, it is becoming harder and harder to tell fake images from real ones. In 2026, AI-generated satellite images of a "destroyed" US radar reached millions of views before being debunked [1].
+With the rise of modern AI, it is becoming harder and harder to tell fake images from real ones. In 2026, AI-generated satellite images of a "destroyed" US radar reached millions of views before being debunked [1]. This project aims to develop a low-cost, low-power camera for CubeSats that signs each image at the moment of capture with a secure element, together with its GPS position and timestamp, so that anyone can verify its authenticity on the ground. This idea is not
 
-<!-- TODO (Jorge): sentence 2 = what this project is (a CubeSat camera that signs every image at capture with a secure element,
-     including time and GPS position). Sentence 3 = what makes it different (still verifiable after packet loss and cropping,
-     on low-cost, low-power hardware). -->
+<!-- TODO (Jorge): finish sentence 3 = what already exists: capture-time signing has been proposed for satellites by Sandia [8][9]
+     and is used in professional cameras through C2PA [3]. Sentence 4 = what this project adds: the signature survives packet
+     loss on the radio downlink, cropped regions stay verifiable, and it all runs on low-cost, low-power hardware. -->
 
 > **Status:** design phase. Components selected and power budget done. Next: first working prototype (capture → sign → verify).
 
@@ -86,6 +86,8 @@ Operating scenario per 10-minute cycle: telemetry (10 × 0.5 s), listening for c
 5. F. Rezabek, D. Malkhi, A. Yahalom, "Space Fabric: A Satellite-Enhanced Trusted Execution Architecture", arXiv:2603.23745, 2026. https://arxiv.org/abs/2603.23745
 6. CCSDS 355.0-B, Space Data Link Security Protocol. https://public.ccsds.org
 7. P. Perazzo et al., "JPEGs Just Got Snipped: Croppable Signatures Against Deepfake Images", arXiv:2512.01845. https://arxiv.org/abs/2512.01845
+8. S. Crosby, K. Brenning, "On Trusting Third-party Satellite Data", Small Satellite Conference, 2022. https://digitalcommons.usu.edu/smallsat/2022/all2022/105
+9. S. M. Crosby, W. Marchetto II, K. D. Brenning (Sandia), "Systems and methods for verification and authentication of remote sensing imagery", US Patent 11,646,896, 2023. https://patents.justia.com/patent/11646896
 
 ## Author
 
