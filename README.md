@@ -1,8 +1,10 @@
 # Signed Camera
 
-<!-- TODO (Jorge): 2–3 sentences in your own words. What is it, what problem does it solve, why does it matter?
-     Idea: a camera module for small satellites that cryptographically signs every image at the moment of capture,
-     so anyone on the ground can verify it is authentic and has not been altered. -->
+With the rise of modern AI, it is becoming harder and harder to tell fake images from real ones. In 2026, AI-generated satellite images of a "destroyed" US radar reached millions of views before being debunked [1].
+
+<!-- TODO (Jorge): sentence 2 = what this project is (a CubeSat camera that signs every image at capture with a secure element,
+     including time and GPS position). Sentence 3 = what makes it different (still verifiable after packet loss and cropping,
+     on low-cost, low-power hardware). -->
 
 > **Status:** design phase. Components selected and power budget done. Next: first working prototype (capture → sign → verify).
 
