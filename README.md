@@ -1,24 +1,24 @@
 # Signed Camera
 
-With the rise of modern AI, it is becoming harder and harder to tell fake images from real ones. In 2026, AI-generated satellite images of a "destroyed" US radar reached millions of views before being debunked [1]. This project aims to develop a low-cost, low-power camera for CubeSats that signs each image at the moment of capture with a secure element, together with its GPS position and timestamp, so that anyone can verify its authenticity on the ground.
+With modern AI it is getting harder and harder to tell fake images from real ones. In 2026, AI-generated satellite images of a "destroyed" US radar got millions of views before anyone proved they were fake [1]. In this project I am building a low-cost, low-power camera for CubeSats that signs every image the moment it is taken, using a secure element, and includes the GPS position and the time in the signature. That way anyone on the ground can check that the image is real and hasn't been modified.
 
-The idea is not completely new: capture-time signing has already been proposed for satellites [2][3], and professional cameras already sign photos at capture through the C2PA standard [4][5]. This project adds two features to that approach. First, images keep a valid signature even when packets are lost on the radio downlink, a frequent situation on low-power satellite links. Second, a cropped region of an image remains verifiable, while any other change is detected. Finally, since this is a university project, it is designed to be as low-cost as possible.
+The idea itself is not new. Signing images at capture has already been proposed for satellites [2][3], and some professional cameras already do it with the C2PA standard [4][5]. What I want to add is two things. First, the signature should still work when some packets are lost on the radio downlink, which happens a lot on low-power satellite links. Second, if you crop the image, the crop should still be verifiable, while any other change gets detected. And since this is a student project, I'm trying to keep it as cheap as possible.
 
-> **Status:** design phase. Components selected and power budget done. Next: first working prototype (capture → sign → verify).
+**Status:** design phase. I've picked the components and done the power budget. Next step is the first prototype: take a photo, sign it and verify it on a PC.
 
 ## How it works
 
-1. **Capture.** The camera (OV2640) takes the picture and the ESP32-S3 receives it as a JPEG. At that exact moment, the time and GPS position are read, and a counter is incremented with every photo.
-2. **Image fingerprint.** The image is split into blocks and the SHA-256 hash of each block is calculated. These hashes are combined into a Merkle tree, whose root is a single fingerprint that represents the whole image. Because each block can be checked on its own, crops can be verified and the image survives lost packets.
-3. **Signature.** The ESP32 sends the root of the tree to the secure element (ATECC608B), together with the time, the GPS position and the counter. The chip signs them with ECDSA P-256. The private key is generated inside the chip and never leaves it.
-4. **Downlink.** The image is sent to the ground by radio in packets, along with the signature and the data needed to verify each block.
-5. **Verification.** The ground station verifies the signature with the chip's public key, using an open-source verifier (first a Python script, later a web tool that runs entirely in the browser):
-   - If packets are lost, the blocks that did arrive can still be verified.
+1. The camera (OV2640) takes the picture and the ESP32-S3 gets it as a JPEG. At the same moment it reads the time and the GPS position, and increases a counter that goes up with every photo.
+2. The image is split into blocks and each block is hashed with SHA-256. The hashes are combined into a Merkle tree, and its root works as a single fingerprint of the whole image. Since every block can be checked on its own, crops can be verified and losing packets doesn't break everything.
+3. The ESP32 sends the root, the time, the GPS position and the counter to the secure element (ATECC608B), which signs them with ECDSA P-256. The private key is generated inside the chip and can't be read out, not even by the ESP32.
+4. The image goes down to the ground by radio in packets, together with the signature and the extra data needed to check each block.
+5. On the ground, the signature is checked with the chip's public key. The verifier will be open source: first a Python script, and later a web page that does everything in the browser.
+   - If some packets are lost, the blocks that arrived can still be verified.
    - If someone crops the image, the crop can still be verified.
-   - If someone changes a single pixel, verification of that block fails.
-   - The counter prevents an old photo from being passed off as a new one.
+   - If someone changes even one pixel, that block fails.
+   - The counter stops someone from passing an old photo off as a new one.
 
-*Steps 2 and 5 describe the planned design. The first prototype will implement capture, signing of the whole image and verification on a PC.*
+Steps 2 and 5 are the planned design. The first prototype will only sign the whole image and verify it on a PC.
 
 ## Block diagram
 
@@ -26,52 +26,54 @@ The idea is not completely new: capture-time signing has already been proposed f
 
 ## Components
 
-| Block | Part | Interface | Why this one |
+| Block | Part | Interface | Why |
 |---|---|---|---|
-| Microcontroller | ESP32-S3 | — | Camera port (DVP), PSRAM, hardware crypto, Wi-Fi for testing |
-| Camera | OV2640 | DVP | 2 MP, hardware JPEG, widely documented |
-| Secure element | ATECC608B | I2C | ECDSA P-256 signing in hardware; private key cannot be read out |
-| GPS | u-blox MAX-M10S | UART | Position and time for the signed metadata; 1 s hot start, ~12 mA |
-| Control radio | SX1262 (868 MHz LoRa) | SPI | Telemetry and telecommands; −148 dBm sensitivity |
+| Microcontroller | ESP32-S3 | – | Camera port (DVP), PSRAM, hardware crypto, Wi-Fi for testing |
+| Camera | OV2640 | DVP | 2 MP, hardware JPEG, lots of examples online |
+| Secure element | ATECC608B | I2C | ECDSA P-256 in hardware, the private key can't be read out |
+| GPS | u-blox MAX-M10S | UART | Position and time for the signature, 1 s hot start, ~12 mA |
+| Control radio | SX1262 (868 MHz LoRa) | SPI | Telemetry and commands, −148 dBm sensitivity |
 | Image radio | SX1280 (2.4 GHz) | SPI | Image downlink, up to 1.3 Mbps (FLRC) |
-| Battery | LiPo 3.7 V, 1000 mAh | — | ~2 days without sun; margin for ageing |
-| Regulator | TPS63802 (buck-boost) | — | Uses the full LiPo range down to 3.0 V; 11 µA quiescent |
-| Charger | BQ24074 | — | Power path (system runs from the panel while charging), adapts to a weak panel |
-| Solar panel | 6 V, 1 W | — | Matches the power budget |
-| Battery gauge | MAX17048 | I2C | State of charge for telemetry, no sense resistor |
+| Battery | LiPo 3.7 V, 1000 mAh | – | About 2 days without sun, with margin for ageing |
+| Regulator | TPS63802 (buck-boost) | – | Uses the whole LiPo range down to 3.0 V, 11 µA quiescent |
+| Charger | BQ24074 | – | Power path (the system runs from the panel while charging), copes with a weak panel |
+| Solar panel | 6 V, 1 W | – | Matches the power budget |
+| Battery gauge | MAX17048 | I2C | Battery percentage for telemetry, no sense resistor needed |
 
-**Design decision: buck-boost instead of an LDO.** An LDO regulator needs the battery to stay above about 3.55 V to deliver 3.3 V, which would leave 15–25 % of the LiPo unused. The TPS63802 buck-boost keeps 3.3 V down to 3.0 V, with about 90 % efficiency and only 11 µA of quiescent current.
+### Why a buck-boost and not an LDO?
 
-Protections on the custom PCB: resettable PTC fuse, reverse-polarity P-MOSFET, main switch, battery NTC, TVS on the panel input, and load switches (TPS22918) to cut camera and GPS power between photos.
+An LDO needs the battery above roughly 3.55 V to give a stable 3.3 V, so I would lose around 15–25 % of the LiPo's capacity. The TPS63802 keeps 3.3 V until the battery drops to 3.0 V, at around 90 % efficiency and with only 11 µA of quiescent current.
+
+The custom PCB will also have a resettable PTC fuse, a P-MOSFET for reverse polarity, a main switch, an NTC on the battery, a TVS on the panel input and two load switches (TPS22918) to turn off the camera and the GPS between photos.
 
 ## Power budget
 
-Operating scenario per 10-minute cycle: telemetry (10 × 0.5 s), listening for commands (10 × 1 s), GPS fix (5 s), photo + signature (3 s), image downlink (30 s), sleep the rest.
+I assumed a 10-minute cycle: telemetry (10 × 0.5 s), listening for commands (10 × 1 s), GPS fix (5 s), photo and signature (3 s), image downlink (30 s), and sleep the rest of the time.
 
 | | Value |
 |---|---|
 | Average current (3.3 V) | 14.6 mA |
 | Peak current | 148 mA |
-| Daily energy needed (with margin) | 1.87 Wh |
-| Daily energy from the panel (1 W, 5 h sun) | 3.20 Wh |
-| Daily balance | **+2.05 Wh** |
-| Minimum battery capacity | 506 mAh → 1000 mAh chosen |
+| Energy needed per day (with margin) | 1.87 Wh |
+| Energy from the panel per day (1 W, 5 h of sun) | 3.20 Wh |
+| Daily balance | +2.05 Wh |
+| Minimum battery capacity | 506 mAh (I chose 1000 mAh) |
 
-The budget leaves a comfortable margin: the panel provides 3.20 Wh per day against 1.87 Wh of consumption (including margin), so there is room for more photos or longer transmissions. The image downlink is the longest active phase of the cycle, so sending only the regions of interest, which croppable signatures make possible [9], is also the most effective way to save energy.
+There is a good margin: the panel gives 3.20 Wh a day and the system needs 1.87 Wh, so there is room for more photos or longer transmissions. The image downlink is the longest active phase, so sending only the part of the image that matters (which croppable signatures allow [9]) is also the best way to save energy.
 
 ## Roadmap
 
 - [x] Component selection
 - [x] Power budget
-- [ ] Prototype: ESP32-S3 + OV2640 + ATECC608B — capture, sign and verify an image on a PC
-- [ ] Add GPS position and time to the signed metadata
+- [ ] Prototype with ESP32-S3, OV2640 and ATECC608B: take, sign and verify an image on a PC
+- [ ] Add GPS position and time to the signature
 - [ ] LoRa control link (868 MHz)
 - [ ] 2.4 GHz image downlink
 - [ ] Schematic and PCB in KiCad
 
 ## Related work
 
-Fake satellite imagery is not only a theoretical risk: researchers have shown that AI can generate realistic satellite images of places that do not exist [6], and such images are already used in disinformation [1]. Signing images at capture has been proposed for satellites [2][3] and is already available in professional cameras through C2PA [4][5]. Other work protects data in space at a different level: Space Fabric uses secure elements on board to attest which software runs on a satellite [7], and the CCSDS Space Data Link Security protocol authenticates the frames of the radio link [8], but neither keeps the image itself verifiable once it is stored on the ground. Croppable signatures, which keep a cropped image verifiable, have been proposed for photographs [9], but not for satellite downlinks with packet loss. This project combines these ideas in a low-cost CubeSat camera.
+Fake satellite images aren't just a theoretical problem. Researchers have shown that AI can generate realistic satellite images of places that don't exist [6], and they are already being used for disinformation [1]. Sandia proposed signing satellite images at capture [2][3], and cameras like the Leica M11-P already sign photos with C2PA [4][5]. Space Fabric uses secure elements on satellites, but to prove which software is running on board, not to sign images [7]. The CCSDS SDLS protocol authenticates the radio link [8], but once the image is saved on the ground that protection is gone. Croppable signatures exist for normal photos [9], but I couldn't find anyone using them for satellite images with packet loss, which is the gap this project tries to fill.
 
 ## References
 
@@ -87,4 +89,4 @@ Fake satellite imagery is not only a theoretical risk: researchers have shown th
 
 ## Author
 
-Jorge Tarriño — Industrial Electronics and Automation Engineering student, Universidad Carlos III de Madrid.
+Jorge Tarriño, Industrial Electronics and Automation Engineering student at Universidad Carlos III de Madrid.
