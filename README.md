@@ -1,10 +1,8 @@
 # Signed Camera
 
-With the rise of modern AI, it is becoming harder and harder to tell fake images from real ones. In 2026, AI-generated satellite images of a "destroyed" US radar reached millions of views before being debunked [1]. This project aims to develop a low-cost, low-power camera for CubeSats that signs each image at the moment of capture with a secure element, together with its GPS position and timestamp, so that anyone can verify its authenticity on the ground. This idea is not
+With the rise of modern AI, it is becoming harder and harder to tell fake images from real ones. In 2026, AI-generated satellite images of a "destroyed" US radar reached millions of views before being debunked [1]. This project aims to develop a low-cost, low-power camera for CubeSats that signs each image at the moment of capture with a secure element, together with its GPS position and timestamp, so that anyone can verify its authenticity on the ground.
 
-<!-- TODO (Jorge): finish sentence 3 = what already exists: capture-time signing has been proposed for satellites by Sandia [8][9]
-     and is used in professional cameras through C2PA [3]. Sentence 4 = what this project adds: the signature survives packet
-     loss on the radio downlink, cropped regions stay verifiable, and it all runs on low-cost, low-power hardware. -->
+The idea is not completely new: capture-time signing has already been proposed for satellites [2][3], and professional cameras already sign photos at capture through the C2PA standard [4][5]. This project adds two features to that approach. First, images keep a valid signature even when packets are lost on the radio downlink, a frequent situation on low-power satellite links. Second, a cropped region of an image remains verifiable, while any other change is detected. Finally, since this is a university project, it is designed to be as low-cost as possible.
 
 > **Status:** design phase. Components selected and power budget done. Next: first working prototype (capture → sign → verify).
 
@@ -71,23 +69,23 @@ Operating scenario per 10-minute cycle: telemetry (10 × 0.5 s), listening for c
 
 ## Related work
 
-<!-- TODO (Jorge): 3–4 sentences comparing this project with existing work, citing the references below by number, e.g. [1].
-     Points: fake satellite images are already used in disinformation [1][2]; camera makers sign photos at capture with a
-     secure chip (C2PA) [3][4]; onboard signing with secure elements exists for satellite computing [5] and CCSDS SDLS
-     protects the radio link [6], but not the image itself once on the ground; croppable signatures exist for photos [7]
-     but not for satellite downlinks with packet loss. -->
+<!-- TODO (Jorge): 3–4 sentences comparing this project with existing work, citing the references below by number.
+     Points: fake satellite images are already used in disinformation [1][6]; capture-time signing has been proposed for
+     satellites by Sandia [2][3] and is used in professional cameras with a secure chip (C2PA) [4][5]; onboard signing with
+     secure elements exists for satellite computing [7] and CCSDS SDLS protects the radio link [8], but not the image itself
+     once on the ground; croppable signatures exist for photos [9] but not for satellite downlinks with packet loss. -->
 
 ## References
 
-1. AFP via Taipei Times, "Fake AI satellite imagery spurs war disinformation", March 2026. https://www.taipeitimes.com/News/world/archives/2026/03/10/2003853579
-2. B. Zhao et al., "Deep fake geography? When geospatial data encounter Artificial Intelligence", *Cartography and Geographic Information Science*, 2021. Summary: https://www.washington.edu/news/2021/04/21/a-growing-problem-of-deepfake-geography-how-ai-falsifies-satellite-images/
-3. Content Authenticity Initiative, "Leica launches world's first camera with Content Credentials", October 2023. https://contentauthenticity.org/blog/leica-launches-worlds-first-camera-with-content-credentials
-4. IEEE Spectrum, "Is that photo real?" (Leica M11-P signing with a secure chipset). https://spectrum.ieee.org/leica-camera-content-credentials
-5. F. Rezabek, D. Malkhi, A. Yahalom, "Space Fabric: A Satellite-Enhanced Trusted Execution Architecture", arXiv:2603.23745, 2026. https://arxiv.org/abs/2603.23745
-6. CCSDS 355.0-B, Space Data Link Security Protocol. https://public.ccsds.org
-7. P. Perazzo et al., "JPEGs Just Got Snipped: Croppable Signatures Against Deepfake Images", arXiv:2512.01845. https://arxiv.org/abs/2512.01845
-8. S. Crosby, K. Brenning, "On Trusting Third-party Satellite Data", Small Satellite Conference, 2022. https://digitalcommons.usu.edu/smallsat/2022/all2022/105
-9. S. M. Crosby, W. Marchetto II, K. D. Brenning (Sandia), "Systems and methods for verification and authentication of remote sensing imagery", US Patent 11,646,896, 2023. https://patents.justia.com/patent/11646896
+1. AFP via Taipei Times, "Fake AI satellite imagery spurs war disinformation", March 2026. [Link](https://www.taipeitimes.com/News/world/archives/2026/03/10/2003853579)
+2. S. Crosby, K. Brenning, "On Trusting Third-party Satellite Data", Small Satellite Conference, Utah State University, 2022. [Link](https://digitalcommons.usu.edu/smallsat/2022/all2022/105)
+3. S. M. Crosby, W. Marchetto II, K. D. Brenning (Sandia National Laboratories), "Systems and methods for verification and authentication of remote sensing imagery", US Patent 11,646,896, 2023. [Link](https://patents.justia.com/patent/11646896)
+4. Content Authenticity Initiative, "Leica launches world's first camera with Content Credentials", October 2023. [Link](https://contentauthenticity.org/blog/leica-launches-worlds-first-camera-with-content-credentials)
+5. IEEE Spectrum, "Is that photo real?", on the Leica M11-P signing photos with a secure chipset. [Link](https://spectrum.ieee.org/leica-camera-content-credentials)
+6. B. Zhao et al., "Deep fake geography? When geospatial data encounter Artificial Intelligence", *Cartography and Geographic Information Science*, 2021. [Summary](https://www.washington.edu/news/2021/04/21/a-growing-problem-of-deepfake-geography-how-ai-falsifies-satellite-images/)
+7. F. Rezabek, D. Malkhi, A. Yahalom, "Space Fabric: A Satellite-Enhanced Trusted Execution Architecture", arXiv:2603.23745, 2026. [Link](https://arxiv.org/abs/2603.23745)
+8. CCSDS 355.0-B, "Space Data Link Security Protocol", Consultative Committee for Space Data Systems. [Link](https://public.ccsds.org)
+9. P. Perazzo et al., "JPEGs Just Got Snipped: Croppable Signatures Against Deepfake Images", arXiv:2512.01845, 2025. [Link](https://arxiv.org/abs/2512.01845)
 
 ## Author
 
