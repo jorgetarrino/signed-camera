@@ -92,3 +92,5 @@ AI can generate realistic satellite images of places that do not exist [6], and 
 ## Author
 
 Jorge Tarriño, Industrial Electronics and Automation Engineering student at Universidad Carlos III de Madrid.
+
+*Documentation drafted with the assistance of an AI tool; design decisions and implementation are the author's own.*
