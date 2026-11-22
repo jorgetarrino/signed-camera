@@ -2,7 +2,7 @@
 
 Fake images are becoming harder to tell apart from real ones as generative AI improves. In 2026, AI-generated satellite images of a "destroyed" US radar reached millions of views before they were debunked [1]. Signed Camera is a low-cost, low-power camera for CubeSats that signs each image at the moment of capture with a secure element. The signature also covers the GPS position and the timestamp, so the image can be verified on the ground by anyone with the public key.
 
-Capture-time signing has already been proposed for satellites [2][3], and some professional cameras implement it through the C2PA standard [4][5]. This project extends the approach in two ways. The signature remains valid when packets are lost on the radio downlink, which is common on low-power satellite links. Cropped regions of an image also remain verifiable, while any other modification is detected. As a university project, the design prioritises low cost.
+Capture-time signing has already been proposed for satellites [2][3], and some professional cameras implement it through the C2PA standard [4][5]. This project combines that approach with two techniques known from other fields and adapts them to a satellite link. The signature remains valid when packets are lost on the radio downlink, which is common on low-power satellite links. Cropped regions of an image also remain verifiable, while any other modification is detected. As a university project, the design prioritises low cost.
 
 **Status:** design phase. Components are selected and the power budget is complete. The next milestone is a first prototype that captures, signs and verifies an image on a PC.
 
@@ -73,7 +73,7 @@ The panel supplies 3.20 Wh per day against 1.87 Wh of demand, which leaves room 
 
 ## Related work
 
-AI can generate realistic satellite images of places that do not exist [6], and such images are already used for disinformation [1]. Sandia National Laboratories proposed signing satellite images at capture [2][3], and cameras such as the Leica M11-P sign photos with C2PA [4][5]. Space Fabric places secure elements on satellites to attest which software runs on board, rather than to sign images [7]. The CCSDS SDLS protocol authenticates the radio link [8], although that protection ends once the image is stored on the ground. Croppable signatures have been proposed for photographs [9], but no published work applying them to satellite imagery with packet loss was found. That combination is the focus of this project.
+AI can generate realistic satellite images of places that do not exist [6], and such images are already used for disinformation [1]. Sandia National Laboratories proposed signing satellite images at capture [2][3], and cameras such as the Leica M11-P sign photos with C2PA [4][5]. Space Fabric places secure elements on satellites to attest which software runs on board, rather than to sign images [7]. The CCSDS SDLS protocol authenticates the radio link [8], although that protection ends once the image is stored on the ground. Croppable signatures have been proposed for photographs [9], and Merkle trees over image tiles have been used to verify crops of ordinary photos [10][11]. Loss-tolerant authentication of data streams is also well established (TESLA, EMSS). No published work was found that combines capture-time signing, packet-loss tolerance and verifiable crops on a low-cost satellite payload. That combination, and in particular how the tree data is distributed across packets so that crops remain verifiable when packets are lost, is the focus of this project.
 
 ## References
 
@@ -86,6 +86,8 @@ AI can generate realistic satellite images of places that do not exist [6], and 
 7. F. Rezabek, D. Malkhi, A. Yahalom, "Space Fabric: A Satellite-Enhanced Trusted Execution Architecture", arXiv:2603.23745, 2026. [Link](https://arxiv.org/abs/2603.23745)
 8. CCSDS 355.0-B, "Space Data Link Security Protocol", Consultative Committee for Space Data Systems. [Link](https://public.ccsds.org)
 9. P. Perazzo et al., "JPEGs Just Got Snipped: Croppable Signatures Against Deepfake Images", arXiv:2512.01845, 2025. [Link](https://arxiv.org/abs/2512.01845)
+10. P. Della Monica, I. Visconti, A. Vitaletti, M. Zecchini, "Trust Nobody: Privacy-Preserving Proofs for Edited Photos with Your Laptop", IACR ePrint 2024/1074, 2024. [Link](https://eprint.iacr.org/2024/1074)
+11. Y.-C. Chen, Y.-P. Chou, Y.-C. Chou, "An Image Authentication Scheme Using Merkle Tree Mechanisms", *Future Internet*, vol. 11, no. 7, 149, 2019. [Link](https://www.mdpi.com/1999-5903/11/7/149)
 
 ## Author
 
