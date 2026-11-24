@@ -1,5 +1,6 @@
 from PIL import Image
 import io
+import hashlib
 
 def upload(path):
     image = Image.open(path)
@@ -18,6 +19,14 @@ def divide(image):
             blocks.append((buffer.getvalue(), j // 100, i // 100))
     return blocks
 
+def hash_blocks(blocks):
+    hashes = []
+    for block, row, col in blocks:
+        data = row.to_bytes(2, "big") + col.to_bytes(2, "big") + block
+        block_hash = hashlib.sha256(data).digest()
+        hashes.append(block_hash)
+    return hashes
+
 if __name__ == "__main__":
     path = "test_images/test_1600x1200.jpg"
     image = upload(path)
@@ -25,3 +34,7 @@ if __name__ == "__main__":
     blocks = divide(image)
     print(len(blocks))
     print(len(blocks[0][0]))
+    hashes = hash_blocks(blocks)
+    print(len(hashes))
+    print(len(hashes[0]))
+    print(hashes[0].hex())
