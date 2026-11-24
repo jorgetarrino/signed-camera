@@ -46,7 +46,7 @@ An LDO requires the battery to stay above roughly 3.55 V to output a stable 3.3 
 
 The custom PCB also includes a resettable PTC fuse, a P-MOSFET for reverse-polarity protection, a main switch, a battery NTC, a TVS diode on the panel input and two load switches (TPS22918) that cut power to the camera and the GPS between photos.
 
-## Power budget
+## Power budget (Under revision)
 
 The budget assumes a 10-minute cycle: telemetry (10 × 0.5 s), listening for commands (10 × 1 s), GPS fix (5 s), photo and signature (3 s), image downlink (30 s) and sleep for the rest of the cycle.
 
