@@ -4,7 +4,7 @@ Fake images are becoming harder to tell apart from real ones as generative AI im
 
 Capture-time signing has already been proposed for satellites [2][3], and some professional cameras implement it through the C2PA standard [4][5]. This project combines that approach with two techniques known from other fields and adapts them to a satellite link. The signature remains valid when packets are lost on the radio downlink, which is common on low-power satellite links. Cropped regions of an image also remain verifiable, while any other modification is detected. As a university project, the design prioritises low cost.
 
-**Status:** design phase. Components are selected and the power budget is complete. The next milestone is a first prototype that captures, signs and verifies an image on a PC.
+**Status:** prototype in progress. Components are selected, and the Python prototype loads an image, divides it into blocks, hashes each block with its position and builds the Merkle root. Signing and ground verification are next. The power budget is being revised.
 
 ## How it works
 
@@ -46,25 +46,14 @@ An LDO requires the battery to stay above roughly 3.55 V to output a stable 3.3 
 
 The custom PCB also includes a resettable PTC fuse, a P-MOSFET for reverse-polarity protection, a main switch, a battery NTC, a TVS diode on the panel input and two load switches (TPS22918) that cut power to the camera and the GPS between photos.
 
-## Power budget (Under revision)
+## Power budget (under revision)
 
-The budget assumes a 10-minute cycle: telemetry (10 × 0.5 s), listening for commands (10 × 1 s), GPS fix (5 s), photo and signature (3 s), image downlink (30 s) and sleep for the rest of the cycle.
-
-| | Value |
-|---|---|
-| Average current (3.3 V) | 14.6 mA |
-| Peak current | 148 mA |
-| Energy needed per day (with margin) | 1.87 Wh |
-| Energy from the panel per day (1 W, 5 h of sun) | 3.20 Wh |
-| Daily balance | +2.05 Wh |
-| Minimum battery capacity | 506 mAh (1000 mAh selected) |
-
-The panel supplies 3.20 Wh per day against 1.87 Wh of demand, which leaves room for more photos or longer transmissions. The image downlink is the longest active phase, so transmitting only the region of interest, which croppable signatures make possible [9], is also the most effective way to reduce energy use.
+The budget assumes a 10-minute cycle: telemetry (10 × 0.5 s), listening for commands (10 × 1 s), GPS fix (5 s), photo and signature (3 s), image downlink (30 s) and sleep for the rest of the cycle. The figures are being recalculated with the fraction of each orbit spent in sunlight, eclipse time and panel orientation.
 
 ## Roadmap
 
 - [x] Component selection
-- [x] Power budget
+- [ ] Power budget (being revised)
 - [ ] Prototype with ESP32-S3, OV2640 and ATECC608B: capture, sign and verify an image on a PC
 - [ ] Add GPS position and time to the signature
 - [ ] LoRa control link (868 MHz)
