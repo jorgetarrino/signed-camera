@@ -89,6 +89,13 @@ AI can generate realistic satellite images of places that do not exist [6], and 
 10. P. Della Monica, I. Visconti, A. Vitaletti, M. Zecchini, "Trust Nobody: Privacy-Preserving Proofs for Edited Photos with Your Laptop", IACR ePrint 2024/1074, 2024. [Link](https://eprint.iacr.org/2024/1074)
 11. Y.-C. Chen, Y.-P. Chou, Y.-C. Chou, "An Image Authentication Scheme Using Merkle Tree Mechanisms", *Future Internet*, vol. 11, no. 7, 149, 2019. [Link](https://www.mdpi.com/1999-5903/11/7/149)
 
+## Learning resources
+
+The Merkle tree code in this repository was written from scratch. The following material was used to learn how Merkle trees and Merkle proofs work:
+
+- Merkle Tree Algorithms, Smart Contract Programmer (YouTube). [Video](https://www.youtube.com/watch?v=Xj8Pt-bF4yo)
+- t4sk, Rust Merkle tree example in *hello-rust*. [Code](https://github.com/t4sk/hello-rust/tree/main/merkle)
+
 ## Author
 
 Jorge Tarriño, Industrial Electronics and Automation Engineering student at Universidad Carlos III de Madrid.
