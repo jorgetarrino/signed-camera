@@ -2,13 +2,15 @@ from PIL import Image
 import io
 import hashlib
 from pathlib import Path
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives import hashes as crypto_hashes
 
 HERE = Path(__file__).parent
 
 WIDTH = 1600
 HEIGHT = 1200
 BLOCK = 100
-
 
 def upload(path):
     image = Image.open(path)
@@ -55,25 +57,24 @@ def merkle_tree(hashes):
     return hs[0]
 
 
+def sign(root, private_key_path):
+    with open(private_key_path, "rb") as f:
+        serialized_private = f.read()
+    private_key = serialization.load_pem_private_key(serialized_private, password=None)
+    signature = private_key.sign(root, ec.ECDSA(crypto_hashes.SHA256()))
+
+    return signature
+
+
+
 if __name__ == "__main__":
     path = HERE / "test_images" / f"test_{WIDTH}x{HEIGHT}.jpg"
     image = upload(path)
-    print(image.size)
     blocks = divide(image)
-    print(len(blocks))
-    print(len(blocks[0][0]))
     hashes = hash_blocks(blocks)
-    print(len(hashes))
-    print(len(hashes[0]))
-    print(hashes[0].hex())
-    
-    # Prueba 1: caso pequeño con 3 hashes (nivel impar)
-    a, b, c = b"A", b"B", b"C"
-    root_test = merkle_tree([a, b, c])
-    expected = hashlib.sha256(hashlib.sha256(a + b).digest() + c).digest()
-    print("3 hashes:", root_test == expected)
-
-    # Prueba 2: los 192 hashes reales de la imagen
     root = merkle_tree(hashes)
-    print("Raíz:", root.hex())
-    print("¿Hashes intactos?:", len(hashes) == 192)
+    signature = sign(root, HERE / "private_key.pem")
+
+    print(f"Blocks: {len(blocks)}")
+    print(f"Merkle root: {root.hex()}")
+    print(f"Signature: {len(signature)} bytes")
