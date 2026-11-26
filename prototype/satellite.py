@@ -1,22 +1,32 @@
 from PIL import Image
 import io
 import hashlib
+from pathlib import Path
+
+HERE = Path(__file__).parent
+
+WIDTH = 1600
+HEIGHT = 1200
+BLOCK = 100
+
 
 def upload(path):
     image = Image.open(path)
     image.load()
-    if image.size != (1600, 1200):
-        raise ValueError("Image must be 1600x1200 pixels")
+    if image.size != (WIDTH, HEIGHT):
+        raise ValueError(f"Image must be {WIDTH}x{HEIGHT} pixels")
     return image
 
 def divide(image):
+    if WIDTH % BLOCK != 0 or HEIGHT % BLOCK != 0:
+        raise ValueError(f"Image dimensions must be divisible by {BLOCK}")
     blocks = []
-    for j in range(0, 1200, 100):
-        for i in range(0, 1600, 100):
-            block = image.crop((i, j, i+100, j+100))
+    for j in range(0, HEIGHT, BLOCK):
+        for i in range(0, WIDTH, BLOCK):
+            block = image.crop((i, j, i+BLOCK, j+BLOCK))
             buffer = io.BytesIO()
             block.save(buffer, format='JPEG')
-            blocks.append((buffer.getvalue(), j // 100, i // 100))
+            blocks.append((buffer.getvalue(), j // BLOCK, i // BLOCK))
     return blocks
 
 def hash_blocks(blocks):
@@ -46,7 +56,7 @@ def merkle_tree(hashes):
 
 
 if __name__ == "__main__":
-    path = "test_images/test_1600x1200.jpg"
+    path = HERE / "test_images" / f"test_{WIDTH}x{HEIGHT}.jpg"
     image = upload(path)
     print(image.size)
     blocks = divide(image)
